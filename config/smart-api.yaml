@@ -1,0 +1,84 @@
+authors:
+    schema:
+        timestamps: true
+        fields:
+            fullname:
+                type: String
+                required: true
+            username:
+                type: String
+                required: true
+            role:
+                type: String
+                required: true
+            password:
+                type: String
+                required: true
+    permissions:
+        default:
+            enabled: true
+
+comments:
+    schema:
+        timestamps: true
+        fields:
+            content:
+                type: String
+                required: true
+            author:
+                type: objectid
+                required: true
+                ref: authors
+            post:
+                type: objectid
+                required: true
+                ref: posts
+    permissions:
+        default:
+            enabled: true
+            fieldsPopulate:
+                - path: author
+                  select: fullname
+                - path: post
+                  select: title
+
+posts:
+    schema:
+        timestamps: true
+        fields:
+            title:
+                type: String
+                required: true
+            content:
+                type: String
+                required: true
+            author:
+                type: objectid
+                required: true
+                ref: authors
+                fromUser: _id
+    permissions:
+        default:
+            enabled: true
+            userFilter:
+                - field: isActive
+                  value: true
+                - field: role
+                  value: us
+                  operator: regex
+            fieldsPopulate:
+                - path: author
+                  select: fullname
+            ressourceFilter:
+                - field: author.fullname
+                  value: smapiuser@fullname
+                  operator: regex
+            fieldsFilter:
+                denied:
+                    - author
+        updateById:
+            default:
+                fieldsFilter:
+                    denied:
+                        - title
+

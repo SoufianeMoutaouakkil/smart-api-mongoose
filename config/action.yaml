@@ -1,0 +1,126 @@
+root:
+    GET:
+        name: getAll
+        modes: [exmode]
+    POST:
+        name: create
+    DELETE:
+        name: removeAll
+        modes: [exmode]
+    PUT:
+        name: updateAll
+        modes: [exmode]
+id(ObjectId):
+    GET:
+        name: getById
+    PUT:
+        name: updateById
+    DELETE:
+        name: removeById
+
+many:
+    GET:
+        name: getMany
+        modes: [exmode, queryFilter, idsFilter]
+    POST:
+        name: createMany
+        modes: [exmode, immode]
+    DELETE:
+        name: removeMany
+        modes: [exmode, queryFilter, idsFilter]
+    PUT:
+        name: updateMany
+        modes: [exmode, queryFilter, idsFilter]
+
+/count:
+    GET:
+        name: count
+        modes: [queryFilter]
+    POST:
+        name: count
+        modes: [queryFilter]
+modes:
+    idsFilter: is used to filter by ids. ids are passed as query parameter or in request body
+    queryFilter: is used to filter by costumized query. query is passed as query parameter or in request body
+    immode: resieve data as file. file is passed in request body and its name is file.
+    exmode: |
+        send data as file with the specified format. format is passed as query parameter or in request body and its name is format.
+        file is sent in response body and its name is [ressourceName]_[date]_export.[format]
+
+ressourceX:
+  schema:
+    timetamps: true
+    fields:
+      - name: description
+        type: objectId
+        isArray: true
+        required: true
+        fromUser: _id
+        path: ressourceY
+        refPath: RessourceZ
+      - name: price
+        type: Float
+        required: true
+  actions:
+    default:
+      enabled: boolean
+      userCheck:
+        - field: isActivated
+          value: true
+          operator: eq
+      ressourceCheck:
+        - field: fieldX
+          value: valueX
+          operator: opY
+        - field: entity.responsable
+          value: smapi@user._id
+          operator: eq
+      fieldsFilter:
+        - denied: [fieldA, fieldB]
+        - allowed: [fieldC, fieldD]
+      fieldsPopulate:
+        - path: fieldE
+          select: fieldF fieldG
+    getAll:
+      default:
+        enabled: boolean
+        userCheck:
+          - field: isActivated
+            value: true
+            operator: eq
+        ressourceCheck:
+          - field: fieldX
+            value: valueX
+            operator: opY
+        fieldsCheck:
+          - denied: [fieldA, fieldB]
+          - allowed: [fieldC, fieldD]
+        fieldsPopulate:
+          - path: fieldE
+            select: fieldF fieldG
+      admin:
+        enabled: true
+        userCheck: no-inherit
+
+search: 
+  - userFilter: # 
+      - field: fieldX
+        value: valueX
+        operator: opY
+  - defaultQuery:
+      - field: fieldA
+        value: smapiuser@userFieldX
+        operator: opA
+      - field: fieldB.fieldB1
+        value: valueB
+        operator: opB
+  - fieldsPopulate:
+      - path: fieldE
+        select: fieldF fieldG
+  - ressourcesFilter:
+      - field: fieldX
+        value: valueX
+        operator: opY
+  - fieldsFilter:
+      - denied: [fieldA, fieldB]
+      - allowed: [fieldC, fieldD]

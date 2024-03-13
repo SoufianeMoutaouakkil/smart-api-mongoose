@@ -1,0 +1,214 @@
+authMiddleware:
+    position: 1
+    responsabitly: check authentication
+    called_if: true
+    requirements:
+        - token
+    output:
+        - user
+    errors:
+        - TOKEN_EXPIRED 401
+        - INVALID_TOKEN 401
+        - NO_TOKEN_PROVIDED 401
+    description: |
+        authMiddleware is the first middleware to be called.
+        It checks if the user is authenticated by checking the token in the request header.
+        If the user is not authenticated, it will throw an error.
+        3 errors can be thrown: "TOKEN_EXPIRED", "INVALID_TOKEN", "NO_TOKEN_PROVIDED" with a status code 401.
+
+reqMiddleware:
+    position: 2
+    responsabitly: extract request parameters
+    called_if: true
+    output:
+        - params:
+              - action: string #see actions schema part
+              - id: ObjectId
+              - query: object
+              - queries: set of query objects # used for count action
+              - ids: array of ObjectId
+              - ressourceName: string
+              - fileFormat: string
+    errors:
+        - INVALID_REQUEST 400
+    description: |
+        reqMiddleware is the second middleware to be called.
+        It extracts the request parameters from the request.
+        It will throw an error if the request parameters are not valid.
+        The error that can be thrown is "INVALID_REQUEST" with a status code 400.
+
+modelMiddleware:
+    position: 3
+    responsabitly: check if the ressource exists
+    called_if: true
+    requirements:
+        - params.ressourceName
+    output:
+        - model
+    errors:
+        - INHANDLED_RESSOURCE 404
+        - INVALID_SCHEMA 500
+        - MODEL_CREATION_KO 500
+    description: |
+        modelMiddleware is the third middleware to be called.
+        It checks if the ressource exists in the configuration file and has a schema.
+        It will try to require the model and pass it to the next middleware.
+        if the model does not exist, it will try to create it from the configuration schema.
+        The error that can be thrown are:
+        - "INHANDLED_RESSOURCE" with a status code 404 : if no schema is found for the ressource.
+        - "INVALID_SCHEMA" with a status code 500 : if the schema is not valid.
+        - "MODEL_CREATION_KO" with a status code 500 : if the model can not be created.
+
+configMiddleware:
+    position: 4
+    responsabitly: prepare the permission and fetch configuration.
+    called_if: true
+    requirements:
+        - params.ressourceName
+        - params.action
+        - user.role
+        - model
+    output:
+        - config:
+              enabled: boolean
+              fieldsFilter: array [string] # fields to select/update/create. default: all model fields.
+              fieldsPopulate: array [{path, select}]
+              userFieldsCheck: array [{operator, value, field}]
+              ressourceFieldsCheck: array [{operator, value, field}]
+              relatedFieldsCheck: array [{operator, userField, ressourceField}]
+    errors:
+        - INHANDLED_ACTION 404
+    description: |
+        configMiddleware is the fourth middleware to be called.
+        It checks if the action exists in the configuration file.
+        It will throw an error if the action does not exist.
+        The error that can be thrown is "INHANDLED_ACTION" with a status code 404.
+
+userCheckMiddleware:
+
+uploadMiddleware.any():
+
+fileMiddleware:
+
+fetchMiddleware:
+
+createMiddleware:
+
+updateMiddleware:
+
+removeMiddleware:
+
+resMiddleware:
+
+errorMiddleware:
+
+action-schema:
+    mainAction:
+        - method: GET
+          result: get
+        - method: PUT
+          result: update
+        - method: DELETE
+          result: remove
+    subAction:
+        - path: /api/v1/:ressourceName/:ObjectId
+          result: ById
+        - path: /api/v1/:ressourceName
+          inQueryParams:
+              - key: ids
+                result: ByIds
+              - key: query
+                result: ByQuery
+              - key: else
+                result: All
+    specialAction:
+        - path: /api/v1/:ressourceName
+          methods: [POST]
+          inBody:
+              - key: data as object
+                result: create
+              - key: data as array
+                result: createMany
+        - path: /api/v1/:ressourceName/import
+          methods: [POST]
+          result: import
+        - path: /api/v1/:ressourceName/export?fileFormat=csv&query={...}
+          methods: [GET]
+          result: export
+        - path: "/api/v1/:ressourceName/count?query={counter1: query1, ...}"
+          methods: [GET]
+          result: count
+
+query-schema:
+    count-mode:
+        format: counter[n] => query[n]
+        process: generate a db query for each counter[n] query # see db query formater
+    db-query-formater:
+        allowed-keys: [operator, value, field]
+        allowed-operators:
+            [eq, ne, gt, gte, lt, lte, in, nin, exists, notExists, or, and]
+        process:
+            - no-field:
+                  - no-operator:
+                        - no-value:
+                              - status: KO
+                                description: No query provided => invalid query
+                        - value:
+                              - status: KO
+                                description: Only value provided => invalid query
+                  - operator:
+                        - no-value:
+                              - status: KO
+                                description: Only operator provided => invalid query
+                        - value:
+                              - case: operator is or || and
+                                status: OK
+                                description: Operator and value provided for sub query => valid query
+                              - case: else
+                                status: KO
+                                description: operator and value are given but no Field => invalid query
+            - field:
+                  - no-operator:
+                        - no-value:
+                              - status: OK
+                                description: No operator and value provided => operator is exists
+                        - value:
+                              - status: OK
+                                description: No operator provided => operator is eq
+                  - operator:
+                        - no-value:
+                              - case: operator is exists or notExists
+                                status: OK
+                                description: Operator and field provided => valid query
+                              - case: else
+                                status: KO
+                                description: Operator provided but no value => invalid query
+                        - value:
+                              - case: valid operator
+                                status: OK
+                                description: Operator, value and field provided => valid query
+                              - case: else
+                                status: KO
+                                description: Not valid operator => invalid query
+
+query-parameters:
+    - key: ids
+      type: array of ObjectId
+      description: |
+          ids is an array of ObjectId.
+          It is used to [get, update or remove] multiple documents from the database.
+          The result will be an array of documents.
+    - key: query
+      type: object
+      description: |
+          query is an object.
+          It is used to filter the documents from the database.
+          The result will be an array of documents.
+    - key: fileFormat
+      type: string
+      allowed-values: [csv, json]
+      default: csv
+      description: |
+          fileFormat is a string.
+          It is used to specify the file format for the export action.
+          The result will be a file with the specified format.

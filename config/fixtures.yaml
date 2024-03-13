@@ -1,0 +1,137 @@
+posts:
+    requires:
+        - authors
+    processes:
+        - number: 10
+          fields:
+              title:
+                  type: increment
+                  value:
+                      origin: static
+                      data: "post title "
+              content:
+                  type: increment
+                  value:
+                      origin: static
+                      data: "post content "
+              author:
+                  type: random
+                  value:
+                      origin: relation
+                      ref: authors
+                      field: _id
+                      identifier: username
+                      data:
+                          [
+                              "user1",
+                              "user2",
+                              "user3",
+                              "user4",
+                              "admin1",
+                              "admin2",
+                          ]
+
+comments:
+    requires:
+        - authors
+        - posts
+    processes:
+        - number: 50
+          fields:
+              content:
+                  type: increment
+                  value:
+                      origin: static
+                      data: "comment content "
+              post:
+                  type: random
+                  value:
+                      origin: relation
+                      ref: posts
+                      field: _id
+                      identifier: title
+                      data:
+                          [
+                              "post title 1",
+                              "post title 2",
+                              "post title 3",
+                              "post title 4",
+                              "post title 5",
+                              "post title 6",
+                              "post title 7",
+                              "post title 8",
+                              "post title 9",
+                              "post title 10",
+                          ]
+              author:
+                  type: random
+                  value:
+                      origin: relation
+                      ref: authors
+                      field: _id
+                      identifier: username
+                      data:
+                          [
+                              "user1",
+                              "user2",
+                              "user3",
+                              "user4",
+                              "user5",
+                              "user6",
+                              "user7",
+                              "user8",
+                              "user9",
+                              "user10",
+                              "admin1",
+                              "admin2",
+                              "admin3",
+                              "admin4",
+                              "admin5",
+                          ]
+
+authors:
+    processes:
+        - number: 10
+          fields:
+              fullname:
+                  type: increment
+                  value:
+                      origin: static
+                      data: "user "
+              username:
+                  type: increment
+                  value:
+                      origin: static
+                      data: user
+              role:
+                  type: fixed
+                  value:
+                      origin: static
+                      data: user
+              password:
+                  type: fixed
+                  value:
+                      origin: static
+                      data: user
+        - number: 5
+          fields:
+              fullname:
+                  type: increment
+                  value:
+                      origin: static
+                      data: admin
+              username:
+                  type: increment
+                  value:
+                      origin: static
+                      data: admin
+              role:
+                  type: fixed
+                  value:
+                      origin: static
+                      data: admin
+              password:
+                  type: fixed
+                  value:
+                      origin: static
+                      data: admin
