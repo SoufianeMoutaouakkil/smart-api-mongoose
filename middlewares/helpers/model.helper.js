@@ -1,6 +1,7 @@
 const { getFiler } = require("../../smUtils/filer");
 const { getSmartApiConfig } = require("./config.helper");
 const { throwError } = require("../../smUtils/request");
+const path = require("path");
 
 const getTimestampsFields = (timestamps) => {
     if (timestamps) {

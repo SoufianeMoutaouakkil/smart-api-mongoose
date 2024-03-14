@@ -1,7 +1,4 @@
-const path = require("path");
-const { getTrackedExports } = require(
-    path.join(appRoot, "utils", "tools", "tracker")
-);
+const { getTrackedExports } =  require("./tracker.util");
 
 /**
  * returns an array of fields that are present in the object and are also present in the allowedFields array

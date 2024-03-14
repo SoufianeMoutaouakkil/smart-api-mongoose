@@ -1,11 +1,8 @@
 const resMiddleware = (req, res, next) => {
-    const { params, config, user, dbData, dbQuery } = req.smartApi;
+    const { token, dbData: data } = req.smartApi;
     res.json({
-        dbData,
-        params,
-        config,
-        dbQuery,
-        user,
+        token,
+        data,
     });
 };
 

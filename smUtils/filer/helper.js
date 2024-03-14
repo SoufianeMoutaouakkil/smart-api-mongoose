@@ -1,4 +1,6 @@
 const fs = require("fs");
+const path = require("path");
+
 const exists = (path) => {
     try {
         return fs.existsSync(path);

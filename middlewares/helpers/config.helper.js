@@ -1,5 +1,6 @@
 const { getFiler } = require("../../smUtils/filer");
 const { throwError } = require("../../smUtils/request");
+const path = require("path");
 
 const getYamlFiler = () => {
     try {
@@ -13,13 +14,23 @@ const getYamlFiler = () => {
     }
 };
 
-const getConfigFilePath = () => {
-    return path.resolve(smartApiAppConfigFilePath);
+const getConfigFilePath = (fileName) => {
+    if (!global.smartApiAppConfigFilePath) {
+        throwError(
+            "Smart Api App config file path is not available",
+            "SMART_API_APP_CONFIG_FILE_PATH_NOT_AVAILABLE",
+            500
+        );
+    }
+    if (typeof fileName !== "string") {
+        throwError("File name must be a string", "INVALID_FILE_NAME", 400);
+    }
+    return path.resolve(smartApiAppConfigFilePath, fileName + ".yaml");
 };
 
-const getConfigFileContent = () => {
+const getConfigFileContent = (fileName = "smart-api") => {
     const filer = getYamlFiler();
-    const config = filer.read(getConfigFilePath());
+    const config = filer.read(getConfigFilePath(fileName));
     return config;
 };
 

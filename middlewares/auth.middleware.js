@@ -12,6 +12,7 @@ const authMiddleware = async (req, res, next) => {
             fullname: "user",
             isActive: true,
         };
+        req.smartApi.token = "mocked-token";
         next();
         return;
     }
