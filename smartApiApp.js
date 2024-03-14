@@ -1,5 +1,10 @@
 const express = require("express");
 const app = express();
+require("dotenv").config();
+require("dotenv").config({ path: ".env.local" });
+
+const mongoose = require("./smUtils/mongoose");
+mongoose.connect();
 
 const authMiddleware = require("./middlewares/auth.middleware");
 const configMiddleware = require("./middlewares/config.middleware");
