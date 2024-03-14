@@ -13,13 +13,13 @@ const getYamlFiler = () => {
     }
 };
 
-const getConfigFilePath = (fileName = "smart-api") => {
-    return path.resolve(__dirname, `../../config/${fileName}.yaml`);
+const getConfigFilePath = () => {
+    return path.resolve(smartApiAppConfigFilePath);
 };
 
-const getConfigFileContent = (fileName) => {
+const getConfigFileContent = () => {
     const filer = getYamlFiler();
-    const config = filer.read(getConfigFilePath(fileName));
+    const config = filer.read(getConfigFilePath());
     return config;
 };
 
@@ -32,18 +32,6 @@ const getAllowedConfigProps = () => {
         "ressourceFilter",
         "fieldsFilter",
     ];
-};
-
-const getDefaultConfigValue = (configField) => {
-    const defaultConfigValues = {
-        enabled: true,
-        fieldsPopulate: true,
-        userFieldsCheck: true,
-        ressourceFieldsCheck: true,
-        relatedFieldsCheck: true,
-        fieldsFilter: true,
-    };
-    return defaultConfigValues[configField];
 };
 
 const getSmartApiConfig = (ressourceName, ...keys) => {
