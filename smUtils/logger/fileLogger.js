@@ -22,7 +22,7 @@ const getLogPath = () => {
         .toISOString()
         .replace(/:/g, "-");
     const logFileName = `log_${logFileTime}_${logFileTimeFormated}.log`;
-    const logPath = path.join(smartApiDirPath, "..", "logs", logFileName);
+    const logPath = path.join(smartApiDirPath, "..", "..", "..", "smart-api-logs", logFileName);
     const logDir = path.dirname(logPath);
     if (!fs.existsSync(logDir)) {
         fs.mkdirSync(logDir, { recursive: true });
