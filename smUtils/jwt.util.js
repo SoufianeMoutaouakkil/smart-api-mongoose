@@ -1,5 +1,14 @@
 const jsonwebtoken = require("jsonwebtoken");
 const { filter } = require("../smUtils/object.util");
+const { getEnvVar } = require("./env.util");
+
+const getJwtSecret = () => {
+    return getEnvVar("JWT_SECRET");
+};
+
+const getJwtExpiration = () => {
+    return getEnvVar("JWT_EXPIRATION");
+};
 
 const getPayloadFields = () => {
     const payloadFields = ["_id", "email", "role", "fullname"];
@@ -27,8 +36,8 @@ const generateToken = (payload) => {
     payload = getFilteredPayload(payload);
     if (payload && Object.keys(payload).length !== 0) {
         token.payload = payload;
-        token.token = jsonwebtoken.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: "1h",
+        token.token = jsonwebtoken.sign(payload, getJwtSecret(), {
+            expiresIn: getJwtExpiration(),
         });
     }
     return token;
@@ -37,7 +46,7 @@ const generateToken = (payload) => {
 const verifyToken = (token) => {
     token = token ?? "";
     return new Promise((resolve, reject) => {
-        jsonwebtoken.verify(token, process.env.JWT_SECRET, (error, payload) => {
+        jsonwebtoken.verify(token, getJwtSecret(), (error, payload) => {
             if (error) reject(error);
             else resolve(generateToken(payload));
         });

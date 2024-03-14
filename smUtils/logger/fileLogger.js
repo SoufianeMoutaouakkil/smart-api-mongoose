@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { addTabToEachLine } = require("./helper");
+const { getEnvVar } = require("../env.util");
 
 const getFilePathTime = (delay, currentTime = 0) => {
     if (isNaN(delay) || delay <= 0) {
@@ -15,9 +16,10 @@ const getFilePathTime = (delay, currentTime = 0) => {
 };
 
 const getLogPath = () => {
-    logDeley = process.env.LOG_DELAY ?? 3600;
+    const logDeley = getEnvVar("LOG_DELAY");
     const logFileTime = getFilePathTime(logDeley);
-    const logFileName = `log_${logFileTime}.log`;
+    const logFileTimeFormated = new Date(logFileTime * 1000).toISOString().replace(/:/g, "-");
+    const logFileName = `log_${logFileTime}_${logFileTimeFormated}.log`;
     const logPath = path.join(appRoot, "logs", logFileName);
     const logDir = path.dirname(logPath);
     if (!fs.existsSync(logDir)) {

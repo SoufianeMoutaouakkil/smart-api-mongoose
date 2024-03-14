@@ -1,8 +1,10 @@
+const { getEnvVar } = require("./env.util");
 const { getLogger } = require("./logger");
 
 const log = (data, funcName) => {
     let logger;
-    if (process.env.LOG_TYPE === "file") {
+    const logType = getEnvVar("LOG_TYPE");
+    if ( logType === "file") {
         logger = getLogger("file");
     } else {
         logger = getLogger();
