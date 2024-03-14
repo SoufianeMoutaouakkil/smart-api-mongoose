@@ -4,7 +4,7 @@ const { getLogger } = require("./logger");
 const log = (data, funcName) => {
     let logger;
     const logType = getEnvVar("LOG_TYPE");
-    if ( logType === "file") {
+    if (logType === "file") {
         logger = getLogger("file");
     } else {
         logger = getLogger();

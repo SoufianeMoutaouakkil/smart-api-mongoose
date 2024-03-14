@@ -18,7 +18,9 @@ const getFilePathTime = (delay, currentTime = 0) => {
 const getLogPath = () => {
     const logDeley = getEnvVar("LOG_DELAY");
     const logFileTime = getFilePathTime(logDeley);
-    const logFileTimeFormated = new Date(logFileTime * 1000).toISOString().replace(/:/g, "-");
+    const logFileTimeFormated = new Date(logFileTime * 1000)
+        .toISOString()
+        .replace(/:/g, "-");
     const logFileName = `log_${logFileTime}_${logFileTimeFormated}.log`;
     const logPath = path.join(appRoot, "logs", logFileName);
     const logDir = path.dirname(logPath);

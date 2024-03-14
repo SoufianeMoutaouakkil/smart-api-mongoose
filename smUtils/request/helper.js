@@ -96,7 +96,8 @@ const getSmartApiAction = (method, pathAction, pathId, queryParams, body) => {
             smartApiAction = `get${actionMode}`;
             break;
         case "POST":
-            if (body?.data && Array.isArray(body.data)) smartApiAction = "createMany";
+            if (body?.data && Array.isArray(body.data))
+                smartApiAction = "createMany";
             else smartApiAction = "create";
             break;
         case "PUT":

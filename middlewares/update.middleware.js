@@ -45,13 +45,9 @@ const updateMiddleware = asyncHandler(async (req, res, next) => {
             allowedFieldsGiven
         );
         const refrechedData = await model.find({ _id: { $in: ids } });
-        
+
         if (updatedData.modifiedCount === 0) {
-            throwError(
-                "No ressource updated",
-                "NO_RESSOURCE_UPDATED",
-                500
-            );
+            throwError("No ressource updated", "NO_RESSOURCE_UPDATED", 500);
         } else if (updatedData.modifiedCount < ids.length) {
             throwError(
                 "Some ressources were not updated",

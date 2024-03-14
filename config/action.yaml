@@ -48,79 +48,79 @@ modes:
         file is sent in response body and its name is [ressourceName]_[date]_export.[format]
 
 ressourceX:
-  schema:
-    timetamps: true
-    fields:
-      - name: description
-        type: objectId
-        isArray: true
-        required: true
-        fromUser: _id
-        path: ressourceY
-        refPath: RessourceZ
-      - name: price
-        type: Float
-        required: true
-  actions:
-    default:
-      enabled: boolean
-      userCheck:
-        - field: isActivated
-          value: true
-          operator: eq
-      ressourceCheck:
-        - field: fieldX
-          value: valueX
-          operator: opY
-        - field: entity.responsable
-          value: smapi@user._id
-          operator: eq
-      fieldsFilter:
-        - denied: [fieldA, fieldB]
-        - allowed: [fieldC, fieldD]
-      fieldsPopulate:
-        - path: fieldE
-          select: fieldF fieldG
-    getAll:
-      default:
-        enabled: boolean
-        userCheck:
-          - field: isActivated
-            value: true
-            operator: eq
-        ressourceCheck:
+    schema:
+        timetamps: true
+        fields:
+            - name: description
+              type: objectId
+              isArray: true
+              required: true
+              fromUser: _id
+              path: ressourceY
+              refPath: RessourceZ
+            - name: price
+              type: Float
+              required: true
+    actions:
+        default:
+            enabled: boolean
+            userCheck:
+                - field: isActivated
+                  value: true
+                  operator: eq
+            ressourceCheck:
+                - field: fieldX
+                  value: valueX
+                  operator: opY
+                - field: entity.responsable
+                  value: smapi@user._id
+                  operator: eq
+            fieldsFilter:
+                - denied: [fieldA, fieldB]
+                - allowed: [fieldC, fieldD]
+            fieldsPopulate:
+                - path: fieldE
+                  select: fieldF fieldG
+        getAll:
+            default:
+                enabled: boolean
+                userCheck:
+                    - field: isActivated
+                      value: true
+                      operator: eq
+                ressourceCheck:
+                    - field: fieldX
+                      value: valueX
+                      operator: opY
+                fieldsCheck:
+                    - denied: [fieldA, fieldB]
+                    - allowed: [fieldC, fieldD]
+                fieldsPopulate:
+                    - path: fieldE
+                      select: fieldF fieldG
+            admin:
+                enabled: true
+                userCheck: no-inherit
+
+search:
+    - userFilter: #
           - field: fieldX
             value: valueX
             operator: opY
-        fieldsCheck:
-          - denied: [fieldA, fieldB]
-          - allowed: [fieldC, fieldD]
-        fieldsPopulate:
+    - defaultQuery:
+          - field: fieldA
+            value: smapiuser@userFieldX
+            operator: opA
+          - field: fieldB.fieldB1
+            value: valueB
+            operator: opB
+    - fieldsPopulate:
           - path: fieldE
             select: fieldF fieldG
-      admin:
-        enabled: true
-        userCheck: no-inherit
-
-search: 
-  - userFilter: # 
-      - field: fieldX
-        value: valueX
-        operator: opY
-  - defaultQuery:
-      - field: fieldA
-        value: smapiuser@userFieldX
-        operator: opA
-      - field: fieldB.fieldB1
-        value: valueB
-        operator: opB
-  - fieldsPopulate:
-      - path: fieldE
-        select: fieldF fieldG
-  - ressourcesFilter:
-      - field: fieldX
-        value: valueX
-        operator: opY
-  - fieldsFilter:
-      - denied: [fieldA, fieldB]
-      - allowed: [fieldC, fieldD]
+    - ressourcesFilter:
+          - field: fieldX
+            value: valueX
+            operator: opY
+    - fieldsFilter:
+          - denied: [fieldA, fieldB]
+          - allowed: [fieldC, fieldD]

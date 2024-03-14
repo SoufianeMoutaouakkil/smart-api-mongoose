@@ -49,16 +49,21 @@ const getAuthorizedFetchQuery = (queryFilter, user) => {
 const getFetchQuery = (user, params, queryFilter) => {
     let fetchQuery = {};
     const initQuery = getInitFetchQuery(params);
-    if (params.ids || params.id || !queryFilter) {fetchQuery = initQuery;}
-    else {const authorizedQuery = getAuthorizedFetchQuery(queryFilter, user);
-        fetchQuery = { ...initQuery, ...authorizedQuery};
+    if (params.ids || params.id || !queryFilter) {
+        fetchQuery = initQuery;
+    } else {
+        const authorizedQuery = getAuthorizedFetchQuery(queryFilter, user);
+        fetchQuery = { ...initQuery, ...authorizedQuery };
     }
-    logger({
-        user,
-        params,
-        queryFilter,
-        output: fetchQuery,
-    }, "getFetchQuery");
+    logger(
+        {
+            user,
+            params,
+            queryFilter,
+            output: fetchQuery,
+        },
+        "getFetchQuery"
+    );
     return fetchQuery;
 };
 
