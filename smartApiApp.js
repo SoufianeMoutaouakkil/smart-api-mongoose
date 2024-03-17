@@ -16,7 +16,6 @@ const errorMiddleware = require("./middlewares/error.middleware");
 const uploadMiddleware = require("./middlewares/upload.middleware");
 const fileMiddleware = require("./middlewares/file.middleware");
 const modelMiddleware = require("./middlewares/model.middleware");
-const actionMiddleware = require("./middlewares/update.middleware");
 const createMiddleware = require("./middlewares/create.middleware");
 const updateMiddleware = require("./middlewares/update.middleware");
 const removeMiddleware = require("./middlewares/remove.middleware");
@@ -25,14 +24,18 @@ const fixtureMiddleware = require("./middlewares/fixture.middleware");
 const exportMiddleware = require("./middlewares/export.middleware");
 const importMiddleware = require("./middlewares/import.middleware");
 const fieldsFilterMiddleware = require("./middlewares/fieldsFilter.middleware");
+const authController = require("./controllers/auth/auth.controller");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/fixtures", fixtureMiddleware);
+app.use(smartApiRootPath + "/fixtures", fixtureMiddleware);
+
+app.use(smartApiRootPath + "/auth/login", authController.login);
+app.use(smartApiRootPath + "/auth/register", authController.register);
 
 app.use(
-    "/",
+    smartApiRootPath,
     authMiddleware,
     reqMiddleware,
     modelMiddleware,
@@ -48,8 +51,9 @@ app.use(
     removeMiddleware,
     fieldsFilterMiddleware,
     exportMiddleware,
-    resMiddleware,
-    errorMiddleware
+    resMiddleware
 );
+
+app.use(errorMiddleware);
 
 module.exports = app;

@@ -16,8 +16,12 @@ const getLogEnvVar = (name) => {
 };
 
 const getDbEnvVar = (name) => {
+    let defaultDbUrl = "";
+    defaultDbUrl += process.env.TEST_DB_URL ?? "mongodb://localhost:27017/";
+    defaultDbUrl += process.env.TEST_DB_NAME ?? "smart-api-test";
+    defaultDbUrl += "?retryWrites=true&w=majority";
     const dbEnvVarsDefault = {
-        DB_URL: "mongodb://localhost:27017/test",
+        DB_URL: defaultDbUrl,
     };
     return getEnvVarOrDefault(name, dbEnvVarsDefault[name]);
 };

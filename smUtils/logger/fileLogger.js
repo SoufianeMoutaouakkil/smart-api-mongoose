@@ -22,7 +22,24 @@ const getLogPath = () => {
         .toISOString()
         .replace(/:/g, "-");
     const logFileName = `log_${logFileTime}_${logFileTimeFormated}.log`;
-    const logPath = path.join(smartApiDirPath, "..", "..", "..", "smart-api-logs", logFileName);
+    let logPath;
+    const nodePathLevel = path
+        .resolve(path.basename(smartApiDirPath), "..")
+        .split(path.sep)
+        .pop();
+    const isInNodemodules = nodePathLevel === "node_modules";
+    if (!isInNodemodules)
+        logPath = path.join(smartApiDirPath, "smart-api-logs", logFileName);
+    else
+        logPath = path.join(
+            smartApiDirPath,
+            "..",
+            "..",
+            "..",
+            "smart-api-logs",
+            logFileName
+        );
+
     const logDir = path.dirname(logPath);
     if (!fs.existsSync(logDir)) {
         fs.mkdirSync(logDir, { recursive: true });

@@ -12,7 +12,7 @@ const getErrorLogContent = (err) => {
     let message = "";
     message += `Error Message   : "${err.message}"\n`;
     message += `Error location  : "${getFirstFileFromStack(err.stack)}"\n`;
-    message += `Error stack     : \n${err.stack}\n`; // remove the \ to see the stack
+    message += `Error stack     : \n\${err.stack}\n`; // remove the \ to see the stack
 
     return message;
 };
@@ -31,7 +31,6 @@ const errorMiddleware = (err, req, res, next) => {
     let item;
     let status = res.statusCode === 200 ? 500 : res.statusCode;
     status = err.status ?? status;
-    console.error(err);
     if (err.code || status !== 500) {
         message = err.message;
         code = err.code;
