@@ -15,6 +15,12 @@ const getFilePathTime = (delay, currentTime = 0) => {
     return (currentTime - (currentTime % delay)) / delay;
 };
 
+const isInNodemodules = (dirPath) => {
+    const dirPathArr = dirPath.split(path.sep)
+    const nodePathLevel = dirPathArr[dirPathArr.length - 3];
+    return nodePathLevel === "node_modules";
+};
+
 const getLogPath = () => {
     const logDeley = getEnvVar("LOG_DELAY");
     const logFileTime = getFilePathTime(logDeley);
@@ -23,12 +29,7 @@ const getLogPath = () => {
         .replace(/:/g, "-");
     const logFileName = `log_${logFileTime}_${logFileTimeFormated}.log`;
     let logPath;
-    const nodePathLevel = path
-        .resolve(path.basename(smartApiDirPath), "..")
-        .split(path.sep)
-        .pop();
-    const isInNodemodules = nodePathLevel === "node_modules";
-    if (!isInNodemodules)
+    if (!isInNodemodules(smartApiDirPath))
         logPath = path.join(smartApiDirPath, "smart-api-logs", logFileName);
     else
         logPath = path.join(
