@@ -1,34 +1,35 @@
 const asyncHandler = require("express-async-handler");
-const { throwError } = require("../../smUtils/request");
-const jwtUtil = require("../../smUtils/jwt.util");
+const { throwError } = require("../smUtils/request");
+const jwtUtil = require("../smUtils/jwt.util");
 const path = require("path");
-
-const User = require("../../models/users.model");
+const {
+    hashPassword,
+    verifyPassword,
+    createResetPasswordToken,
+    cleanResetPasswordData,
+} = require("./auth.helper");
 
 const register = asyncHandler(async (req, res) => {
-    const { fullname, login, password, image, role } = req.body;
+    const User = req.smartApi.model;
+    const { username, password, role } = req.body;
 
     if (process.env.AUTH_REGISTER_ENABLED !== "true") {
         throwError("Registration is disabled!", "REGISTRATION_DISABLED", 403);
     }
 
-    if (!login || !password) {
+    if (!username || !password) {
         throwError(
-            "Login and password are required!",
+            "username and password are required!",
             "LOGIN_PASSWORD_REQUIRED",
             400
         );
     }
 
-    let email = null;
-    // ceck if login is email with regex
-    if (login.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) email = login;
-
-    const user = await User.findOne({ login });
+    const user = await User.findOne({ username });
 
     if (user) {
         throwError(
-            `User with login ${login} already exists!`,
+            `User with username ${username} already exists!`,
             "USER_EXISTS",
             400
         );
@@ -38,11 +39,9 @@ const register = asyncHandler(async (req, res) => {
     let newUser = new User({});
 
     try {
-        newUser.fullname = fullname;
-        newUser.login = login;
-        newUser.email = email;
-        newUser.image = image;
+        newUser.username = username;
         newUser.role = role;
+        newUser.password = await hashPassword(password);
         await newUser.save();
     } catch (error) {
         throwError(
@@ -52,12 +51,10 @@ const register = asyncHandler(async (req, res) => {
         );
     }
 
-    await newUser.setPassword(password);
-    await newUser.save();
     if (newUser) {
         const user = {
             _id: newUser._id,
-            login: newUser.login,
+            username: newUser.username,
             role: newUser.role,
         };
         const token = jwtUtil.generateToken(user).token;
@@ -74,24 +71,30 @@ const register = asyncHandler(async (req, res) => {
 });
 
 const login = asyncHandler(async (req, res) => {
-    const { login, password } = req.body;
-
-    const user = await User.findOne({ login });
+    const User = req.smartApi.model;
+    const { username, password } = req.body;
+    if (!username || !password) {
+        throwError(
+            "username and password are required!",
+            "LOGIN_PASSWORD_REQUIRED",
+            400
+        );
+    }
+    const user = await User.findOne({ username });
 
     if (!user)
         throwError(
-            `User with login ${login} not found!`,
+            `User with username ${username} not found!`,
             "USER_NOT_FOUND",
             404
         );
-    else if (!user.verifyPassword(password))
+    else if (await verifyPassword(password, user.password))
         throwError("Invalid password!", "INVALID_PASSWORD", 400);
     else
         res.json({
             user: {
                 _id: user._id,
-                fullname: user.fullname,
-                email: user.email,
+                username: user.username,
                 role: user.role,
             },
             token: jwtUtil.generateToken(user).token,
@@ -99,20 +102,31 @@ const login = asyncHandler(async (req, res) => {
         });
 });
 
-const resetPasswordRequest = asyncHandler(async (req, res) => {
-    const { email } = req.body;
+const passwordForgot = asyncHandler(async (req, res) => {
+    const User = req.smartApi.model;
+    const { username } = req.body;
 
-    const user = await User.findOne({ email });
+    // check if username is email
+    if (!username.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
+        throwError(
+            `Your user name is invalid email address: '${username}'. you can only reset password with email address!`,
+            "INVALID_EMAIL_ADDRESS",
+            400
+        );
+    const user = await User.findOne({ username });
 
     if (!user) {
         throwError(
-            `User with email ${email} not found!`,
+            `User with username ${username} not found!`,
             "USER_NOT_FOUND",
             404
         );
     }
 
-    let token = await user.createResetPasswordToken();
+    let { token, expiredAt } = await createResetPasswordToken();
+    user.resetPasswordToken = token;
+    user.resetPasswordTokenExpires = expiredAt;
+    await user.save();
     let resetUrl = `${req.headers.origin}/reset-password/${token}`;
     console.log("resetPasswordRequest - resetUrl is :", resetUrl);
     let html = fs.read.file(
@@ -121,24 +135,25 @@ const resetPasswordRequest = asyncHandler(async (req, res) => {
     html = html.replace("{resetUrl}", resetUrl);
     mailer.sendMail(
         {
-            to: user.email,
+            to: user.username,
             html,
         },
-        (err) => {
-            user.cleanResetPasswordData();
+        async (err) => {
+            await cleanResetPasswordData(user);
             throw err;
         },
         () => {
             res.json({
-                message: `Password reset mail is sent to ${user.email}`,
-                email: user.email,
+                message: `Password reset mail is sent to ${user.username}`,
+                email: user.username,
                 status: "SUCCESS",
             });
         }
     );
 });
 
-const resetPasswordAction = asyncHandler(async (req, res) => {
+const passwordReset = asyncHandler(async (req, res) => {
+    const User = req.smartApi.model;
     const { newPassword, resetPasswordToken } = req.body;
 
     const user = await User.findOne({ resetPasswordToken });
@@ -158,8 +173,8 @@ const resetPasswordAction = asyncHandler(async (req, res) => {
     if (!newPassword) {
         throw errorUtil.generateError(authErrors.resetPasswordAction.password);
     }
-    await user.setPassword(newPassword);
-    await user.cleanResetPasswordData();
+    user.password = await hashPassword(newPassword);
+    await cleanResetPasswordData(user);
     res.json({
         message: "Password reseted successfully",
         status: "SUCCESS",
@@ -169,6 +184,6 @@ const resetPasswordAction = asyncHandler(async (req, res) => {
 module.exports = {
     register,
     login,
-    resetPasswordRequest,
-    resetPasswordAction,
+    passwordForgot,
+    passwordReset,
 };

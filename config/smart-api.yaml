@@ -1,16 +1,17 @@
-authors:
+users:
     schema:
         timestamps: true
         fields:
             fullname:
                 type: String
-                required: true
             username:
                 type: String
                 required: true
             role:
                 type: String
                 required: true
+                enum: "'user', 'admin'"
+                default: 'user'
             password:
                 type: String
                 required: true
@@ -28,7 +29,7 @@ comments:
             author:
                 type: objectid
                 required: true
-                ref: authors
+                ref: users
             post:
                 type: objectid
                 required: true
@@ -55,7 +56,7 @@ posts:
             author:
                 type: objectid
                 required: true
-                ref: authors
+                ref: users
                 fromUser: _id
     permissions:
         default:

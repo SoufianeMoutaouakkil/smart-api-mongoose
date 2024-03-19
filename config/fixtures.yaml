@@ -1,6 +1,6 @@
 posts:
     requires:
-        - authors
+        - users
     processes:
         - number: 10
           fields:
@@ -18,7 +18,7 @@ posts:
                   type: random
                   value:
                       origin: relation
-                      ref: authors
+                      ref: users
                       field: _id
                       identifier: username
                       data:
@@ -33,7 +33,7 @@ posts:
 
 comments:
     requires:
-        - authors
+        - users
         - posts
     processes:
         - number: 50
@@ -67,7 +67,7 @@ comments:
                   type: random
                   value:
                       origin: relation
-                      ref: authors
+                      ref: users
                       field: _id
                       identifier: username
                       data:
@@ -89,7 +89,7 @@ comments:
                               "admin5",
                           ]
 
-authors:
+users:
     processes:
         - number: 10
           fields:

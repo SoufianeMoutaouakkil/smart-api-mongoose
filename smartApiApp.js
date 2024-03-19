@@ -24,15 +24,14 @@ const fixtureMiddleware = require("./middlewares/fixture.middleware");
 const exportMiddleware = require("./middlewares/export.middleware");
 const importMiddleware = require("./middlewares/import.middleware");
 const fieldsFilterMiddleware = require("./middlewares/fieldsFilter.middleware");
-const authController = require("./controllers/auth/auth.controller");
+const authrouter = require("./auth/auth.router");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(smartApiRootPath + "/fixtures", fixtureMiddleware);
 
-app.use(smartApiRootPath + "/auth/login", authController.login);
-app.use(smartApiRootPath + "/auth/register", authController.register);
+app.use(smartApiRootPath + "/auth", authrouter);
 
 app.use(
     smartApiRootPath,
