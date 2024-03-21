@@ -1,8 +1,9 @@
 const jwtUtil = require("../smUtils/jwt.util");
 const { throwError } = require("../smUtils/request");
-const isMockMode = true;
+const isMockMode = false;
+const asyncHandler = require("express-async-handler")
 
-const authMiddleware = async (req, res, next) => {
+const authMiddleware = asyncHandler(async (req, res, next) => {
     if (!req.smartApi) req.smartApi = {};
     if (isMockMode) {
         req.smartApi.user = {
@@ -51,6 +52,6 @@ const authMiddleware = async (req, res, next) => {
             401
         );
     }
-};
+});
 
 module.exports = authMiddleware;

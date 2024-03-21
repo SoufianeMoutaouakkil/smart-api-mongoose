@@ -12,7 +12,7 @@ const getErrorLogContent = (err) => {
     let message = "";
     message += `Error Message   : "${err.message}"\n`;
     message += `Error location  : "${getFirstFileFromStack(err.stack)}"\n`;
-    message += `Error stack     : \n\${err.stack}\n`; // remove the \ to see the stack
+    message += `Error stack     : \n${err.stack}\n`; // remove the \ to see the stack
 
     return message;
 };

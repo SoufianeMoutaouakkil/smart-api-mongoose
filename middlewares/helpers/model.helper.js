@@ -55,6 +55,16 @@ const getFieldType = (type) => {
     }
 };
 
+const getDefaultValue = (value) => {
+    if (typeof value === "string") return `default: "${value}",`;
+    else if (typeof value === "number") return `default: ${value},`;
+    else if (typeof value === "boolean") return `default: ${value},`;
+    else if (typeof value === "object")
+        return `default: ${JSON.stringify(value)},`;
+
+    return "";
+};
+
 const getEntityContent = (config) => {
     let timestampsFields = getTimestampsFields(config?.timestamps);
     const fields = Object.keys(config.fields);
@@ -73,7 +83,7 @@ const getEntityContent = (config) => {
             if (field.immutable) fieldContent += "immutable: true,";
             if (field.required) fieldContent += "required: true,";
             if (field.enum) fieldContent += `enum: [${field.enum}],`;
-            if (field.default) fieldContent += `default: ${field.default},`;
+            if (field.default) fieldContent += getDefaultValue(field.default);
             if (field.minlength)
                 fieldContent += `minlength: [${field.minlength}, "${field.name} min characters is ${field.minlength}!"],`;
             if (field.maxlength)
