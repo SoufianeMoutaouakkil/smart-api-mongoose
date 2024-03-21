@@ -46,7 +46,7 @@ myApi.listen(3000, () => {
 
 ```
 ### Configuration: configDir/smart-api.yaml
-in the configDir, you should create a smart-api.yaml file with the next structure:
+- in the configDir, you should create a smart-api.yaml file with the next structure:
     - ressourceX: main key is the name of the ressource, and should have the schema and the permissions.
         - the schema contains the next keys:
             - timestamps: if true, the library will add createdAt and updatedAt fields and manage them.
@@ -56,7 +56,7 @@ in the configDir, you should create a smart-api.yaml file with the next structur
             - actionX: the permissions for the actionX;
                 - default: the default permissions for the actionX and for all users roles.
                 - roleX: the permissions for the actionX and for the roleX. override the default permissions for the actionX and for the ressourceX
-the permissions controles are:
+- the permissions controles are:
     - enabled: if false the action is disabled.
     - userFilter: it's used on the current user to check if the user can access the action.
     - queryFilter: it's used while fetching data. help as pre-filtering the data.
@@ -64,7 +64,7 @@ the permissions controles are:
     - ressourceFilter: it's used on the fetched documents to check if the user can access them.
     - fieldsFilter: it's used on the fetched documents to filter the fields that the user can update/read.
 
-Example:
+- Example:
 ```yaml
 users:
     schema:
