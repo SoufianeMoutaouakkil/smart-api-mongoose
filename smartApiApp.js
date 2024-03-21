@@ -27,6 +27,10 @@ const fieldsFilterMiddleware = require("./middlewares/fieldsFilter.middleware");
 const authrouter = require("./auth/auth.router");
 
 app.use(express.json());
+// allow all origins
+const cors = require("cors");
+app.use(cors());
+
 app.use(express.urlencoded({ extended: true }));
 
 app.use(smartApiRootPath + "/fixtures", fixtureMiddleware);
@@ -34,7 +38,7 @@ app.use(smartApiRootPath + "/fixtures", fixtureMiddleware);
 app.use(smartApiRootPath + "/auth", authrouter);
 
 app.use(
-    smartApiRootPath,
+    smartApiRootPath + "/api",
     authMiddleware,
     reqMiddleware,
     modelMiddleware,
