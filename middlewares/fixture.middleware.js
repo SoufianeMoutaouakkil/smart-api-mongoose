@@ -181,6 +181,7 @@ const fixtureMiddleware = async (req, res, next) => {
     const fixturesConfig = getFixturesConfig();
     const fixturesOrder = getFixturesOrder(fixturesConfig);
     const models = await getModels(fixturesOrder);
+    console.log("fixtures models : ", Object.keys(models));
     let fixtures = {};
     for (let ressource of fixturesOrder) {
         const model = models[ressource];

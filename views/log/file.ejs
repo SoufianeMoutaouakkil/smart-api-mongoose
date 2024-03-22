@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log File Content</title>
+</head>
+<body>
+    <h1>Log File Content : <%= fileName %></h1> 
+    <a href="<%= smartApiRootPath %>/log">Back</a>
+    <br>
+    <a href="<%= smartApiRootPath %>/log/delete/<%= fileName %>">Delete</a>
+    <br>
+    <pre>
+        <% if (locals.content) { %>
+            <%= content %>
+        <% } else { %>
+            No log available
+        <% } %>
+    </pre>    
+</body>
+</html>

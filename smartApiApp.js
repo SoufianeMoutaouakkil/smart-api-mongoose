@@ -25,6 +25,7 @@ const exportMiddleware = require("./middlewares/export.middleware");
 const importMiddleware = require("./middlewares/import.middleware");
 const fieldsFilterMiddleware = require("./middlewares/fieldsFilter.middleware");
 const authrouter = require("./auth/auth.router");
+const logrouter = require("./log/log.router");
 
 app.use(express.json());
 // allow all origins
@@ -32,6 +33,19 @@ const cors = require("cors");
 app.use(cors());
 
 app.use(express.urlencoded({ extended: true }));
+
+const viewsDir = __dirname + "/views";
+app.set("view engine", "ejs");
+app.set("views", viewsDir);
+const coockieParser = require("cookie-parser");
+app.use(coockieParser());
+
+app.use("*", (req, res, next) => {
+    console.log("smart api package : req.originalUrl", req.originalUrl);
+    next();
+});
+
+app.use(smartApiRootPath + "/log", logrouter);
 
 app.use(smartApiRootPath + "/fixtures", fixtureMiddleware);
 

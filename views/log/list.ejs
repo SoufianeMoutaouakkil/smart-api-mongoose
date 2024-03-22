@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+</head>
+<body>
+    <h1>
+        <%= title %>
+    </h1>
+    <a href="<%= smartApiRootPath %>/log">Refresh</a>
+    <% if (files.length === 0) { %>
+        <h3>No log available</h3>
+    <% } else { %>
+        <a href="<%= smartApiRootPath %>/log/delete">Delete All</a>
+        <ul>
+            <% files.forEach(function(file) { %>
+                <a href="<%= smartApiRootPath %>/log/files/<%= file %>"
+                >
+                    <%= file %>
+                </a>
+                <br>
+            <% }); %>
+        </ul>
+    <% } %>
+    <script>
+        const deleteLink = "<%= smartApiRootPath %>/log/delete";
+        const deleteAll = document.querySelector(`a[href='${deleteLink}']`);
+        deleteAll.addEventListener('click', function(event) {
+            event.preventDefault();
+            const confirmedPassword = prompt('Critical action! Please enter the password');
+            if (confirmedPassword) {
+                fetch(deleteLink, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password: confirmedPassword })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        if (data.code === "INVALID_PASSWORD") {
+                            alert('Wrong password');
+                        } else {
+                            alert(data.message);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

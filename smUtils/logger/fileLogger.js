@@ -16,31 +16,34 @@ const getFilePathTime = (delay, currentTime = 0) => {
 };
 
 const isInNodemodules = (dirPath) => {
-    const dirPathArr = dirPath.split(path.sep)
+    const dirPathArr = dirPath.split(path.sep);
     const nodePathLevel = dirPathArr[dirPathArr.length - 3];
     return nodePathLevel === "node_modules";
 };
 
 const getLogPath = () => {
-    const logDeley = getEnvVar("LOG_DELAY");
-    const logFileTime = getFilePathTime(logDeley);
-    const logFileTimeFormated = new Date(logFileTime * 1000)
-        .toISOString()
-        .replace(/:/g, "-");
-    const logFileName = `log_${logFileTime}_${logFileTimeFormated}.log`;
     let logPath;
     if (!isInNodemodules(smartApiDirPath))
-        logPath = path.join(smartApiDirPath, "smart-api-logs", logFileName);
+        logPath = path.join(smartApiDirPath, "smart-api-logs");
     else
         logPath = path.join(
             smartApiDirPath,
             "..",
             "..",
             "..",
-            "smart-api-logs",
-            logFileName
+            "smart-api-logs"
         );
+    return logPath;
+};
 
+const getLogFilePath = () => {
+    const logDeley = getEnvVar("LOG_DELAY");
+    const logFileTime = getFilePathTime(logDeley);
+    const logFileTimeFormated = new Date(logFileTime * 1000)
+        .toISOString()
+        .replace(/:/g, "-");
+    const logFileName = `log_${logFileTime}_${logFileTimeFormated}.log`;
+    const logPath = path.join(getLogPath(), logFileName);
     const logDir = path.dirname(logPath);
     if (!fs.existsSync(logDir)) {
         fs.mkdirSync(logDir, { recursive: true });
@@ -52,7 +55,7 @@ const getLogPath = () => {
 };
 
 const saveLog = (logContent) => {
-    const logPath = getLogPath();
+    const logPath = getLogFilePath();
     fs.appendFile(logPath, logContent, (err) => {
         if (err) {
             console.error(err);
@@ -68,4 +71,5 @@ const log = (logContent, nbTabs = 1) => {
 
 module.exports = {
     log,
+    getLogPath,
 };
