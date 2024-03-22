@@ -1,7 +1,7 @@
 {
     "name": "@smart-api/mongoose",
-    "version": "1.0.2",
-    "description": "\"# mongoose-smart-api\"",
+    "version": "1.0.3",
+    "description": "\"# mongoose-smart-api: with auth\"",
     "main": "index.js",
     "scripts": {
         "start": "node index.js",
