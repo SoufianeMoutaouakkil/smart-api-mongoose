@@ -53,6 +53,12 @@ posts:
             content:
                 type: String
                 required: true
+            _cid:
+                type: String
+                required: true
+                auto:
+                    prefix: 'POST'
+                    length: 6
             author:
                 type: objectid
                 required: true
@@ -61,22 +67,6 @@ posts:
     permissions:
         default:
             enabled: true
-            userFilter:
-                - field: isActive
-                  value: true
-                - field: role
-                  value: us
-                  operator: regex
-            fieldsPopulate:
-                - path: author
-                  select: fullname
-            ressourceFilter:
-                - field: author.fullname
-                  value: smapiuser@fullname
-                  operator: regex
-            fieldsFilter:
-                denied:
-                    - author
         updateById:
             default:
                 fieldsFilter:

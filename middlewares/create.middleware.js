@@ -4,6 +4,7 @@ const {
     filterObjects,
     checkRequiredFields,
     fitWithUserData,
+    setAutoFields,
 } = require("./helpers/action.helper");
 const { getSmartApiConfig } = require("./helpers/config.helper");
 
@@ -24,21 +25,24 @@ const verifyRequiredFields = (config, data) => {
     }
 };
 
-const getRessourceData = (data, fields, user, config) => {
+const getRessourceData = (data, fields, config) => {
     // Check if required fields are present
     verifyRequiredFields(config, data);
 
     // get allowed fields values from body
-    const fieldsGiven = filterObjects(data, fields);
+    let ressource = filterObjects(data, fields);
 
-    let ressource = fitWithUserData(config, fieldsGiven, user);
     delete ressource._id;
     return ressource;
 };
 
 const createOne = async (model, data, user, config, fields) => {
-    const ressourceData = getRessourceData(data, fields, user, config);
-    const ressource = await model.create(ressourceData);
+    let ressource = getRessourceData(data, fields, config);
+
+    // setAutoFields and fitWithUserData
+    ressource = fitWithUserData(config, ressource, user);
+    ressource = await setAutoFields(config, ressource, model);
+    ressource = await model.create(ressource);
     return ressource;
 };
 
@@ -46,9 +50,12 @@ const createMany = async (model, datas, user, config, fields) => {
     // Check if required fields are present
     let ressources = [];
     for (let data of datas) {
-        const ressourceData = getRessourceData(data, fields, user, config);
+        const ressourceData = getRessourceData(data, fields, config);
         ressources.push(ressourceData);
     }
+    // setAutoFields and fitWithUserData
+    ressources = fitWithUserData(config, ressources, user);
+    ressources = await setAutoFields(config, ressources, model);
     // create new ressources with allowed fields values given
     ressources = await model.insertMany(ressources);
     return ressources;
