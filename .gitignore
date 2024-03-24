@@ -2,5 +2,6 @@ node_modules
 uploads
 logs
 .env
+models
 
 smart-api-logs
