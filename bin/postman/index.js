@@ -1,9 +1,11 @@
+#!/usr/bin/env node
+
 const fs = require("fs");
 const generatePostmanCollection = require("./postman");
 
 const args = process.argv.slice(2);
 let name = "My API";
-let ressources = ["users", "posts"];
+let ressources = ["users"];
 
 args.forEach((arg, index) => {
     if (arg === "--name") {
@@ -15,8 +17,7 @@ args.forEach((arg, index) => {
 
 const data = {
     name: name || "My API",
-    ressources:
-    ressources.length > 0 ? ressources : ["users", "posts", "comments"],
+    ressources: ressources.length > 0 ? ressources : ["users"],
 };
 
 const collection = generatePostmanCollection(data);
