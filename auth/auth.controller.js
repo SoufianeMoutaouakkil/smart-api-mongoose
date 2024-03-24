@@ -82,24 +82,26 @@ const login = asyncHandler(async (req, res) => {
     }
     const user = await User.findOne({ username });
 
-    if (!user)
+    if (!user) {
         throwError(
             `User with username ${username} not found!`,
             "USER_NOT_FOUND",
             404
         );
-    else if (await verifyPassword(password, user.password))
-        throwError("Invalid password!", "INVALID_PASSWORD", 400);
-    else
-        res.json({
-            user: {
-                _id: user._id,
-                username: user.username,
-                role: user.role,
-            },
-            token: jwtUtil.generateToken(user).token,
-            status: "SUCCESS",
-        });
+    } else {
+        const isPassOk = await verifyPassword(password, user.password);
+        if (!isPassOk) throwError("Invalid password!", "INVALID_PASSWORD", 400);
+        else
+            res.json({
+                user: {
+                    _id: user._id,
+                    username: user.username,
+                    role: user.role,
+                },
+                token: jwtUtil.generateToken(user).token,
+                status: "SUCCESS",
+            });
+    }
 });
 
 const passwordForgot = asyncHandler(async (req, res) => {
