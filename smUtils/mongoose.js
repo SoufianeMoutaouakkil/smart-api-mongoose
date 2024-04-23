@@ -4,9 +4,9 @@ const { getEnvVar } = require("./env.util");
 
 const connect = async (dbUrl) => {
     if (dbUrl === undefined) dbUrl = getEnvVar("DB_URL");
+    const logger = getLogger();
     try {
         const conn = await mongoose.connect(dbUrl);
-        const logger = getLogger();
         logger(
             `MongoDB Connected: ${conn.connection.host}`,
             "MongoDB Connection"
