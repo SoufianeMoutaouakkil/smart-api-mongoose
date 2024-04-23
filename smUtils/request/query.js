@@ -9,7 +9,7 @@ const getdbQueryItem = (item) => {
             query[field] = value;
             break;
         case "regex":
-            query[field] = { $regex: value };
+            query[field] = { $regex: value, $options: "i" };
             break;
         case "exists":
             query[field] = { $exists: true };

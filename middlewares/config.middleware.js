@@ -19,11 +19,13 @@ const getRessourceConfig = (ressourceName) => {
     return ressourceConfig;
 };
 
+// to do: refactoring to make it more simple
 const getFinalConfig = (ressourceName, action, userRole) => {
     const ressourceConfig = getRessourceConfig(ressourceName);
     const configProps = getAllowedConfigProps();
     const config = {};
     const ressourceDefaultConfig = ressourceConfig["default"] ?? {};
+    const ressourceRoleConfig = ressourceConfig[userRole] ?? {};
     const actionDefaultConfig = ressourceConfig[action]?.["default"] ?? {};
 
     // get final config by merging default config from ressource, action and role
@@ -31,6 +33,12 @@ const getFinalConfig = (ressourceName, action, userRole) => {
         // first set the default value from ressource
         config[prop] = ressourceDefaultConfig[prop] ?? undefined;
 
+        // then override with role config from ressource if available and it's not "no-inherit"
+        if (ressourceRoleConfig[prop] !== undefined) {
+            if (ressourceRoleConfig[prop] === "no-inherit")
+                config[prop] = undefined;
+            else config[prop] = ressourceRoleConfig[prop];
+        }
         // then override with action default value if available and it's not "no-inherit"
         if (actionDefaultConfig[prop] !== undefined) {
             if (actionDefaultConfig[prop] === "no-inherit")
