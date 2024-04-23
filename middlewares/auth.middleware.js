@@ -1,9 +1,10 @@
 const jwtUtil = require("../smUtils/jwt.util");
 const { throwError } = require("../smUtils/request");
 const isMockMode = false;
-const asyncHandler = require("express-async-handler")
+const asyncHandler = require("express-async-handler");
 
 const authMiddleware = asyncHandler(async (req, res, next) => {
+    const guestEnabled = process.env.GUEST_ENABLED === "true";
     if (!req.smartApi) req.smartApi = {};
     if (isMockMode) {
         req.smartApi.user = {
@@ -19,9 +20,20 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
     }
     const authorization =
         req.headers["authorization"] || req.headers["Authorization"];
-    const token = jwtUtil.getTokenFromAuthorization(authorization);
-
-    if (token) {
+    let token = jwtUtil.getTokenFromAuthorization(authorization);
+    if (!token && guestEnabled) {
+        const randomId = Math.random().toString(36).substring(7);
+        const email = `${randomId}@smart.api`;
+        const guestUser = {
+            _id: "guest",
+            username: email,
+            role: "guest",
+            fullname: "guest",
+        };
+        token = jwtUtil.generateToken(guestUser);
+        req.smartApi.user = token.payload;
+        req.smartApi.token = token.token;
+    } else if (token) {
         await jwtUtil
             .verifyToken(token)
             .then((data) => {
@@ -31,8 +43,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
                 next();
             })
             .catch((err) => {
-                errorMessage = err.message;
-                if (errorMessage === "jwt expired")
+                if (err.message === "jwt expired")
                     throwError(
                         "Unauthorized : token expired!",
                         "TOKEN_EXPIRED",
