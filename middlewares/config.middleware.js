@@ -33,17 +33,18 @@ const getFinalConfig = (ressourceName, action, userRole) => {
         // first set the default value from ressource
         config[prop] = ressourceDefaultConfig[prop] ?? undefined;
 
-        // then override with role config from ressource if available and it's not "no-inherit"
-        if (ressourceRoleConfig[prop] !== undefined) {
-            if (ressourceRoleConfig[prop] === "no-inherit")
-                config[prop] = undefined;
-            else config[prop] = ressourceRoleConfig[prop];
-        }
         // then override with action default value if available and it's not "no-inherit"
         if (actionDefaultConfig[prop] !== undefined) {
             if (actionDefaultConfig[prop] === "no-inherit")
                 config[prop] = undefined;
             else config[prop] = actionDefaultConfig[prop];
+        }
+
+        // then override with role config from ressource if available and it's not "no-inherit"
+        if (ressourceRoleConfig[prop] !== undefined) {
+            if (ressourceRoleConfig[prop] === "no-inherit")
+                config[prop] = undefined;
+            else config[prop] = ressourceRoleConfig[prop];
         }
 
         // get role specific value
