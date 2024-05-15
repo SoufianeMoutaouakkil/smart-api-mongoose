@@ -33,6 +33,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
         token = jwtUtil.generateToken(guestUser);
         req.smartApi.user = token.payload;
         req.smartApi.token = token.token;
+        next();
     } else if (token) {
         await jwtUtil
             .verifyToken(token)
