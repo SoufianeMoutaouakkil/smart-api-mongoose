@@ -11,7 +11,7 @@ const getJwtExpiration = () => {
 };
 
 const getPayloadFields = () => {
-    const payloadFields = ["_id", "email", "role", "fullname"];
+    const payloadFields = ["_id", "username", "role", "fullname"];
     return payloadFields;
 };
 
