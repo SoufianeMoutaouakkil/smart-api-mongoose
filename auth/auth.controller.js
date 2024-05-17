@@ -96,6 +96,7 @@ const login = asyncHandler(async (req, res) => {
                 user: {
                     _id: user._id,
                     username: user.username,
+                    fullname: user.fullname,
                     role: user.role,
                 },
                 token: jwtUtil.generateToken(user).token,
