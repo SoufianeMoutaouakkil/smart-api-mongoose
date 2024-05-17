@@ -1,5 +1,6 @@
 const { getTrackedExports } = require("../../smUtils/tracker.util");
 const { throwError } = require("../../smUtils/request");
+const { isValidObjectId } = require("mongoose");
 
 const throwQueryError = (message, item = undefined) => {
     message = message ? "Invalid query : " + message : "Invalid query";
@@ -70,6 +71,8 @@ const evaluateQueryItem = (object, item) => {
     const fieldValue = resolveObjectValue(object, field);
     switch (operator) {
         case "eq":
+            if (isValidObjectId(value) && isValidObjectId(fieldValue))
+                return fieldValue.toString() === value.toString();
             return fieldValue === value;
         case "regex":
             return fieldValue.match(new RegExp(value, "i")) !== null;
