@@ -14,7 +14,7 @@ const removeMiddleware = asyncHandler(async (req, res, next) => {
         if (dbData) {
             // remove the document or documents
             try {
-                let ids;
+                let ids = [];
                 if (Array.isArray(dbData)) {
                     ids = dbData.map((ressource) => ressource._id);
                 } else {
@@ -24,7 +24,7 @@ const removeMiddleware = asyncHandler(async (req, res, next) => {
                 const removedData = await model.deleteMany({
                     _id: { $in: ids },
                 });
-                if (removedData.deletedCount === 0) {
+                if (removedData.deletedCount === 0 && ids.length !== 0) {
                     throwError(
                         "No ressource removed",
                         "NO_RESSOURCE_REMOVED",
