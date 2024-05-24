@@ -161,6 +161,13 @@ const requireAvailableModels = async () => {
     });
 };
 
+const generateNessearyModels = (fieldsPopulate) => {
+    fieldsPopulate.forEach((field) => {
+        const { resource } = field;
+        getModel(resource);
+    });
+};
+
 module.exports = {
     getModel,
     requireAvailableModels,

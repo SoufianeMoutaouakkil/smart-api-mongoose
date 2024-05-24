@@ -124,8 +124,10 @@ const fetchMiddleware = expressAsyncHandler(async (req, res, next) => {
         validateDataNumberForIdsMode(dbData, ids, id, "not_found");
 
         // populate the data if needed [fieldsPopulate]
-        if (dbData.length !== 0 && fieldsPopulate)
+        if (dbData.length !== 0 && fieldsPopulate) {
+            generateNessearyModels(fieldsPopulate);
             dbData = await model.populate(dbData, config.fieldsPopulate);
+        }
 
         // filter dbData if needed [ressourceFilter]
         if (dbData.length !== 0 && ressourceFilter)
