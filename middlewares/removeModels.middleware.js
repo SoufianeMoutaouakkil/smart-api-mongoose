@@ -3,7 +3,7 @@ const removeModels = (req, res, next) => {
     if (removeModels === "true") {
         const fs = require("fs");
         const path = require("path");
-        const modelsPath = path.join(appRoot, "models");
+        const modelsPath = path.join(smartApiDirPath, "models");
         fs.readdir(modelsPath, (err, files) => {
             if (err) {
                 console.error("Error reading models directory: ", err);
