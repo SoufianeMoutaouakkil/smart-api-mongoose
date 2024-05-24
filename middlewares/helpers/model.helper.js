@@ -171,4 +171,5 @@ const generateNessearyModels = (fieldsPopulate) => {
 module.exports = {
     getModel,
     requireAvailableModels,
+    generateNessearyModels,
 };

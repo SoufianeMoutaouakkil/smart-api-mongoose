@@ -9,6 +9,8 @@ const {
     evaluateQueryItem,
 } = require("./helpers/query.helper");
 const { getLogger } = require("../smUtils/logger");
+const { generateNessearyModels } = require("./helpers/model.helper");
+
 const logger = getLogger("file");
 
 const mustFetch = (action) => {
