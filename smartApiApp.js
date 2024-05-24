@@ -7,25 +7,28 @@ const mongoose = require("./smUtils/mongoose");
 mongoose.connect();
 
 const authMiddleware = require("./middlewares/auth.middleware");
-const configMiddleware = require("./middlewares/config.middleware");
 const reqMiddleware = require("./middlewares/req.middleware");
-const resMiddleware = require("./middlewares/res.middleware");
+const modelMiddleware = require("./middlewares/model.middleware");
+const configMiddleware = require("./middlewares/config.middleware");
 const userCheckMiddleware = require("./middlewares/userCheck.middleware");
-const fetchMiddleware = require("./middlewares/fetch.middleware");
-const errorMiddleware = require("./middlewares/error.middleware");
 const uploadMiddleware = require("./middlewares/upload.middleware");
 const fileMiddleware = require("./middlewares/file.middleware");
-const modelMiddleware = require("./middlewares/model.middleware");
+const importMiddleware = require("./middlewares/import.middleware");
+const fetchMiddleware = require("./middlewares/fetch.middleware");
+// const ressourceCheckMiddleware = require("./middlewares/ressourceCheck.middleware");
 const createMiddleware = require("./middlewares/create.middleware");
 const updateMiddleware = require("./middlewares/update.middleware");
 const removeMiddleware = require("./middlewares/remove.middleware");
-// const ressourceCheckMiddleware = require("./middlewares/ressourceCheck.middleware");
-const fixtureMiddleware = require("./middlewares/fixture.middleware");
-const exportMiddleware = require("./middlewares/export.middleware");
-const importMiddleware = require("./middlewares/import.middleware");
 const fieldsFilterMiddleware = require("./middlewares/fieldsFilter.middleware");
-const authrouter = require("./auth/auth.router");
+const removeModelsMiddleware = require("./middlewares/removeModels.middleware");
+const exportMiddleware = require("./middlewares/export.middleware");
+const resMiddleware = require("./middlewares/res.middleware");
+
+const errorMiddleware = require("./middlewares/error.middleware");
+
 const logrouter = require("./log/log.router");
+const fixtureMiddleware = require("./middlewares/fixture.middleware");
+const authrouter = require("./auth/auth.router");
 
 app.use(express.json());
 // allow all origins
@@ -67,6 +70,7 @@ app.use(
     updateMiddleware,
     removeMiddleware,
     fieldsFilterMiddleware,
+    removeModelsMiddleware,
     exportMiddleware,
     resMiddleware
 );
