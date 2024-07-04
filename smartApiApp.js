@@ -20,7 +20,7 @@ const createMiddleware = require("./middlewares/create.middleware");
 const updateMiddleware = require("./middlewares/update.middleware");
 const removeMiddleware = require("./middlewares/remove.middleware");
 const fieldsFilterMiddleware = require("./middlewares/fieldsFilter.middleware");
-const removeModelsMiddleware = require("./middlewares/removeModels.middleware");
+const generateModelsMiddleware = require("./middlewares/generateModels.middleware");
 const exportMiddleware = require("./middlewares/export.middleware");
 const resMiddleware = require("./middlewares/res.middleware");
 
@@ -30,12 +30,13 @@ const logrouter = require("./log/log.router");
 const fixtureMiddleware = require("./middlewares/fixture.middleware");
 const authrouter = require("./auth/auth.router");
 
-app.use(express.json());
 // allow all origins
 const cors = require("cors");
 app.use(cors());
 
-app.use(express.urlencoded({ extended: true }));
+// Increase the payload size limit
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 const viewsDir = __dirname + "/views";
 app.set("view engine", "ejs");
@@ -58,6 +59,7 @@ app.use(
     smartApiRootPath + "/api",
     authMiddleware,
     reqMiddleware,
+    generateModelsMiddleware,
     modelMiddleware,
     configMiddleware,
     userCheckMiddleware,
@@ -70,7 +72,6 @@ app.use(
     updateMiddleware,
     removeMiddleware,
     fieldsFilterMiddleware,
-    removeModelsMiddleware,
     exportMiddleware,
     resMiddleware
 );

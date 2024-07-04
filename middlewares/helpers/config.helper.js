@@ -1,6 +1,15 @@
 const { getFiler } = require("../../smUtils/filer");
+const { getLastUpdateDate } = require("../../smUtils/filer/helper");
 const { throwError } = require("../../smUtils/request");
 const path = require("path");
+
+const getLastConfigUpdateDate = (filePath = null) => {
+    const configFilePath = filePath ?? getConfigFilePath();
+    const lastUpdateDate = getLastUpdateDate(configFilePath);
+    const lastUpdateDateStr = lastUpdateDate?.toISOString() ?? null;
+    console.log(`Last update date of "${configFilePath}": ${lastUpdateDateStr}`);
+    return lastUpdateDate;
+};
 
 const getYamlFiler = () => {
     try {
@@ -79,4 +88,5 @@ module.exports = {
     getAllowedConfigProps,
     getAllowedFields,
     getConfigFileContent,
+    getLastConfigUpdateDate,
 };

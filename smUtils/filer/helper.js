@@ -1,6 +1,16 @@
 const fs = require("fs");
 const path = require("path");
 
+const getLastUpdateDate = (filePath) => {
+    try {
+        const stats = fs.statSync(filePath);
+        return stats.mtime;
+    } catch (error) {
+        console.error(`Getting last update date for "${filePath}" failed: ${error.message}`);
+        return null;
+    }
+};
+
 const exists = (path) => {
     try {
         return fs.existsSync(path);
@@ -39,4 +49,5 @@ module.exports = {
     write,
     create,
     readDir,
+    getLastUpdateDate,
 };
