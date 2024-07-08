@@ -31,7 +31,15 @@ const mustUpdateModel = (modelName) => {
     return modelUpdateDate < configUpdateDate;
 };
 
-const removeModels = (req, res, next) => {
+const createModelsDirIfNotExists = () => {
+    const modelsDirPath = path.join(smartApiDirPath, "models");
+    if (!fs.existsSync(modelsDirPath)) {
+        fs.mkdirSync(modelsDirPath);
+    }
+};
+
+const generateModels = (req, res, next) => {
+    createModelsDirIfNotExists();
     fs.readdir(path.join(smartApiDirPath, "models"), (err, files) => {
         if (err) {
             console.error("Error while reading models directory", err);
@@ -60,4 +68,4 @@ const removeModels = (req, res, next) => {
     next();
 };
 
-module.exports = removeModels;
+module.exports = generateModels;
