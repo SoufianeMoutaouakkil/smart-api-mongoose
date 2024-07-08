@@ -24,7 +24,7 @@ const getYamlFiler = () => {
     }
 };
 
-const getConfigFilePath = (fileName) => {
+const getConfigFilePath = (fileName = "smart-api") => {
     if (!global.smartApiAppConfigFilePath) {
         throwError(
             "Smart Api App config file path is not available",

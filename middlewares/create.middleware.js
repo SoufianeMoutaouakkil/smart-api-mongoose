@@ -15,11 +15,25 @@ const mustCreate = (action) => {
     return action.startsWith("create");
 };
 
+const getFormatedDataToLog = (data) => {
+    if (Object.keys(data).length === 0) {
+        return "{}";
+    }
+    Object.keys(data).map((key) => {
+        data[key] =
+            typeof data[key] === "string"
+                ? data[key].substring(0, 50) + "..."
+                : data[key];
+    });
+    return JSON.stringify(data);
+};
+
 const verifyRequiredFields = (config, data) => {
     const missedRequiredFields = checkRequiredFields(config, data);
     if (missedRequiredFields) {
+        data = getFormatedDataToLog(data);
         throwError(
-            `Missing required fields: ${missedRequiredFields.join(", ")} for data: ${JSON.stringify(data)}`,
+            `Missing required fields: ${missedRequiredFields.join(", ")} for data: ${data}`,
             "MISSING_REQUIRED_FIELDS"
         );
     }
