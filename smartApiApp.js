@@ -8,6 +8,7 @@ mongoose.connect();
 
 const authMiddleware = require("./middlewares/auth.middleware");
 const reqMiddleware = require("./middlewares/req.middleware");
+const generateModelsMiddleware = require("./middlewares/generateModels.middleware");
 const modelMiddleware = require("./middlewares/model.middleware");
 const configMiddleware = require("./middlewares/config.middleware");
 const userCheckMiddleware = require("./middlewares/userCheck.middleware");
@@ -20,7 +21,6 @@ const createMiddleware = require("./middlewares/create.middleware");
 const updateMiddleware = require("./middlewares/update.middleware");
 const removeMiddleware = require("./middlewares/remove.middleware");
 const fieldsFilterMiddleware = require("./middlewares/fieldsFilter.middleware");
-const generateModelsMiddleware = require("./middlewares/generateModels.middleware");
 const exportMiddleware = require("./middlewares/export.middleware");
 const resMiddleware = require("./middlewares/res.middleware");
 

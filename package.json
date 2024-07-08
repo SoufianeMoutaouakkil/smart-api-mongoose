@@ -1,6 +1,6 @@
 {
     "name": "@smart-api/mongoose",
-    "version": "1.0.25",
+    "version": "1.0.26",
     "description": "\"# mongoose-smart-api: with auth/log/fixtures/postman\"",
     "main": "index.js",
     "bin": {
