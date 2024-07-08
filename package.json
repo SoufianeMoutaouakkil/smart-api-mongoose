@@ -1,10 +1,10 @@
 {
     "name": "@smart-api/mongoose",
-    "version": "1.0.24",
+    "version": "1.0.25",
     "description": "\"# mongoose-smart-api: with auth/log/fixtures/postman\"",
     "main": "index.js",
     "bin": {
-        "generate-postman-collection": "./bin/postman/index.js"
+        "smartapi-postman": "./bin/postman/index.js"
     },
     "scripts": {
         "start": "node index.js",
