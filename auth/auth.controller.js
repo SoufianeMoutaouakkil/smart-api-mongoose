@@ -131,7 +131,6 @@ const passwordForgot = asyncHandler(async (req, res) => {
     user.resetPasswordTokenExpires = expiredAt;
     await user.save();
     let resetUrl = `${req.headers.origin}/reset-password/${token}`;
-    console.log("resetPasswordRequest - resetUrl is :", resetUrl);
     let html = fs.read.file(
         path.resolve(__dirname, "../views/reset-password-mail.html")
     );

@@ -7,7 +7,8 @@ const getLastConfigUpdateDate = (filePath = null) => {
     const configFilePath = filePath ?? getConfigFilePath();
     const lastUpdateDate = getLastUpdateDate(configFilePath);
     const lastUpdateDateStr = lastUpdateDate?.toISOString() ?? null;
-    console.log(`Last update date of "${configFilePath}": ${lastUpdateDateStr}`);
+    // debug_only
+    // console.log(`Last update date of "${configFilePath}": ${lastUpdateDateStr}`);
     return lastUpdateDate;
 };
 

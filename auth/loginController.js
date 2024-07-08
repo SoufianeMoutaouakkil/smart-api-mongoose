@@ -83,7 +83,6 @@ const resetPasswordRequest = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-        console.log("Error code in ath : ", res.statusCode);
         throw errorUtil.generateError(authErrors.resetPasswordRequest.email, {
             email,
         });
@@ -91,7 +90,6 @@ const resetPasswordRequest = asyncHandler(async (req, res) => {
 
     let token = await user.createResetPasswordToken();
     let resetUrl = `${req.headers.origin}/reset-password/${token}`;
-    console.log("resetPasswordRequest - resetUrl is :", resetUrl);
     let html = fs.read.file(
         path.resolve(__dirname, "../views/reset-password-mail.html")
     );

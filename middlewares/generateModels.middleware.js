@@ -39,12 +39,21 @@ const removeModels = (req, res, next) => {
         }
         const config = getConfigFileContent();
         const configuredModels = Object.keys(config);
+        // debug_only
+        // console.log("Configured models:", configuredModels);
         configuredModels.forEach((modelName) => {
             if (!files.includes(`${modelName}.model.js`)) {
+                // debug_only
+                // console.log(`Model "${modelName}" not found, creating it...`);
                 createModel(modelName);
             } else if (mustUpdateModel(modelName)) {
+                // debug_only
+                // console.log(`Model "${modelName}" is outdated, updating it...`);
                 removeOldModel(modelName);
                 createModel(modelName);
+            } else {
+                // debug_only
+                // console.log(`Model "${modelName}" is up to date`);
             }
         });
     });
