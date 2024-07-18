@@ -44,8 +44,15 @@ const updateMiddleware = asyncHandler(async (req, res, next) => {
             { _id: { $in: ids } },
             allowedFieldsGiven
         );
-        const refrechedData = await model.find({ _id: { $in: ids } });
-
+        let refrechedData = [];
+        const fieldsPopulate = req?.smartApi?.config?.fieldsPopulate;
+        if (fieldsPopulate) {
+            refrechedData = await model
+                .find({ _id: { $in: ids } })
+                .populate(fieldsPopulate);
+        } else {
+            refrechedData = await model.find({ _id: { $in: ids } });
+        }
         if (updatedData.modifiedCount === 0) {
             throwError("No ressource updated", "NO_RESSOURCE_UPDATED", 500);
         } else if (updatedData.modifiedCount < ids.length) {
@@ -56,7 +63,9 @@ const updateMiddleware = asyncHandler(async (req, res, next) => {
             );
         }
 
-        req.smartApi.dbData = refrechedData;
+        req.smartApi.dbData = Array.isArray(dbData)
+            ? refrechedData
+            : refrechedData[0];
     }
 
     next();

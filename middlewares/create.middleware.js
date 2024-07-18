@@ -46,7 +46,8 @@ const getRessourceData = (data, fields, config) => {
     // get allowed fields values from body
     let ressource = filterObjects(data, fields);
 
-    delete ressource._id;
+    const removeId = process.env.REMOVE_ID_BEFORE_CREATION === "true";
+    if (removeId) delete ressource._id;
     return ressource;
 };
 
